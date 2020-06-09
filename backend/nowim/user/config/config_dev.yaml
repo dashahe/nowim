@@ -1,0 +1,8 @@
+postgres:
+  host: localhost
+  port: 5432
+  database: postgres
+  username: nowim
+  password: nowimpw
+
+secret: 0.0__0.0
