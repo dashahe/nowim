@@ -6,12 +6,12 @@ import (
 )
 
 type Message struct {
-	MessageID  string             `json:"messageID" bson:"messageID"`
-	SenderID   int64              `json:"senderID" bson:"senderID"`
-	ReceiverID int64              `json:"receiverID" bson:"receiverID"`
-	Content    string             `json:"content" bson:"content"`
-	ClientTime int64              `json:"clientTime" bson:"clientTime"`
-	ServerTime int64              `json:"serverTime" bson:"serverTime"`
+	MessageID  string `json:"messageID" bson:"messageID"`
+	SenderID   int64  `json:"senderID" bson:"senderID"`
+	ReceiverID int64  `json:"receiverID" bson:"receiverID"`
+	Content    string `json:"content" bson:"content"`
+	ClientTime int64  `json:"clientTime" bson:"clientTime"`
+	ServerTime int64  `json:"serverTime" bson:"serverTime"`
 }
 
 func NewMessage(senderID, receiverID, clientTime int64, content string) *Message {

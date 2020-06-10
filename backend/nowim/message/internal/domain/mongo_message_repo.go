@@ -31,7 +31,7 @@ func NewMongoMessageRepo() *MongoMessageRepo {
 	return &MongoMessageRepo{mongoColl: mongoColl}
 }
 
-func (m MongoMessageRepo) SaveMessage(message *Message) error {
+func (m MongoMessageRepo) InsertMessage(message *Message) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	_, err := m.mongoColl.InsertOne(ctx, message)

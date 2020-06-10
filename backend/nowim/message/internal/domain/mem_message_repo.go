@@ -11,7 +11,7 @@ func NewMemMessageRepo() *MemMessageRepo {
 	return &MemMessageRepo{data: make([]*Message, 0)}
 }
 
-func (m *MemMessageRepo) SaveMessage(message *Message) error {
+func (m *MemMessageRepo) InsertMessage(message *Message) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
