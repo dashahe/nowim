@@ -15,6 +15,15 @@ type KafkaMessageChannel struct {
 	readerConfig kafka.ReaderConfig
 }
 
+func NewKafkaMessageChannel(writerConfig kafka.WriterConfig, readerConfig kafka.ReaderConfig) *KafkaMessageChannel {
+	return &KafkaMessageChannel{
+		writers: make(map[int64]*kafka.Writer),
+		readers: make(map[int64]*kafka.Reader),
+		writerConfig: writerConfig,
+		readerConfig: readerConfig,
+	}
+}
+
 func (k KafkaMessageChannel) PushMessage(channel int64, message *domain.Message) error {
 	if k.writers[channel] == nil {
 		k.writerConfig.Topic = strconv.FormatInt(channel, 10)
@@ -29,7 +38,6 @@ func (k KafkaMessageChannel) PushMessage(channel int64, message *domain.Message)
 	return k.writers[channel].WriteMessages(context.Background(), kafkaMessage)
 }
 
-// TODO，考虑close的signal提醒，避免websocket连接断开后，继续消费消息
 func (k KafkaMessageChannel) Consume(channel int64) (*domain.Message, error) {
 	if k.readers[channel] == nil {
 		k.readerConfig.Topic = strconv.FormatInt(channel, 10)
@@ -47,4 +55,20 @@ func (k KafkaMessageChannel) Consume(channel int64) (*domain.Message, error) {
 	}
 
 	return &message, nil
+}
+
+func (k KafkaMessageChannel) Close(channel int64) error {
+	if r, ok := k.readers[channel]; ok {
+		if err := r.Close(); err != nil {
+			return err
+		}
+	}
+	if w, ok := k.writers[channel]; ok {
+		if err := w.Close(); err != nil {
+			return err
+		}
+	}
+	delete(k.readers, channel)
+	delete(k.writers, channel)
+	return nil
 }

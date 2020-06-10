@@ -3,7 +3,9 @@ package api
 import (
 	"context"
 	"fmt"
+	"github.com/segmentio/kafka-go"
 	log "github.com/sirupsen/logrus"
+	"nowim.message/internal/config"
 	"nowim.message/internal/domain"
 	"nowim.message/pkg/channel"
 	"nowim.message/pkg/message"
@@ -18,9 +20,19 @@ type messageServerImpl struct {
 }
 
 func NewMessageServer() message.MessageServer {
+	w := kafka.WriterConfig{
+		Brokers: config.Config().Kafka.Brokers,
+		Balancer: &kafka.LeastBytes{},
+	}
+	r := kafka.ReaderConfig{
+		Brokers: config.Config().Kafka.Brokers,
+		Partition: 0,
+		MinBytes:  10e3, // 10KB
+		MaxBytes:  10e6, // 10MB
+	}
 	return messageServerImpl{
-		repo: domain.NewMemMessageRepo(),
-		//messageChan TODO
+		repo: domain.NewMongoMessageRepo(),
+		messageChan: channel.NewKafkaMessageChannel(w, r),
 	}
 }
 

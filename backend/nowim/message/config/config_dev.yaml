@@ -5,4 +5,9 @@ mongo:
   collection: messages
 
 kafka:
-  
+  brokers:
+    - localhost:9092
+
+grpc:
+  host: localhost
+  port: 8080

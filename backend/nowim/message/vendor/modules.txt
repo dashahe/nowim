@@ -28,6 +28,8 @@ github.com/pkg/errors
 github.com/pmezard/go-difflib/difflib
 # github.com/segmentio/kafka-go v0.3.6
 ## explicit
+github.com/segmentio/kafka-go
+github.com/segmentio/kafka-go/sasl
 # github.com/sirupsen/logrus v1.6.0
 ## explicit
 github.com/sirupsen/logrus

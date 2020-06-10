@@ -10,6 +10,8 @@ import (
 
 type Conf struct {
 	Mongo Mongo `yaml:"mongo"`
+	Kafka Kafka `yaml:"kafka"`
+	GRpc  GRpc  `yaml:"grpc"`
 }
 
 type Mongo struct {
@@ -17,6 +19,15 @@ type Mongo struct {
 	Port       string `yaml:"port"`
 	Database   string `yaml:"database"`
 	Collection string `yaml:"collection"`
+}
+
+type Kafka struct {
+	Brokers []string `yaml:"brokers"`
+}
+
+type GRpc struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 
 var conf Conf

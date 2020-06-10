@@ -26,6 +26,11 @@ func (m *MemMessageChannel) Consume(channel int64) (*domain.Message, error) {
 	return result, nil
 }
 
+func (m *MemMessageChannel) Close(channel int64) error {
+	delete(m.channels, channel)
+	return nil
+}
+
 func (m *MemMessageChannel) checkEmptyChan(channel int64) {
 	_, ok := m.channels[channel]
 	if !ok {
