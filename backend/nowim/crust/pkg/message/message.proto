@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "pkg/message";
+
+service Message {
+    rpc SendMessage (SendMessageRequest) returns (SendMessageReply);
+}
+
+message SendMessageRequest {
+  int64 senderID = 1;
+  int64 receiverID = 2;
+  int64 clientTime = 3;
+  string content = 4;
+}
+
+message SendMessageReply {
+}

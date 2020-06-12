@@ -3,28 +3,28 @@ package channel
 import (
 	"context"
 	"encoding/json"
-	"github.com/segmentio/kafka-go"
-	"nowim.message/internal/domain"
 	"strconv"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type KafkaMessageChannel struct {
-	writers map[int64]*kafka.Writer
-	readers map[int64]*kafka.Reader
+	writers      map[int64]*kafka.Writer
+	readers      map[int64]*kafka.Reader
 	writerConfig kafka.WriterConfig
 	readerConfig kafka.ReaderConfig
 }
 
 func NewKafkaMessageChannel(writerConfig kafka.WriterConfig, readerConfig kafka.ReaderConfig) *KafkaMessageChannel {
 	return &KafkaMessageChannel{
-		writers: make(map[int64]*kafka.Writer),
-		readers: make(map[int64]*kafka.Reader),
+		writers:      make(map[int64]*kafka.Writer),
+		readers:      make(map[int64]*kafka.Reader),
 		writerConfig: writerConfig,
 		readerConfig: readerConfig,
 	}
 }
 
-func (k KafkaMessageChannel) PushMessage(channel int64, message *domain.Message) error {
+func (k KafkaMessageChannel) PushMessage(channel int64, message *Message) error {
 	if k.writers[channel] == nil {
 		k.writerConfig.Topic = strconv.FormatInt(channel, 10)
 		k.writers[channel] = kafka.NewWriter(k.writerConfig)
@@ -32,13 +32,13 @@ func (k KafkaMessageChannel) PushMessage(channel int64, message *domain.Message)
 
 	data, _ := json.Marshal(message)
 	kafkaMessage := kafka.Message{
-		Key:       []byte(message.MessageID),
-		Value:     data,
+		Key:   []byte(message.MessageID),
+		Value: data,
 	}
 	return k.writers[channel].WriteMessages(context.Background(), kafkaMessage)
 }
 
-func (k KafkaMessageChannel) Consume(channel int64) (*domain.Message, error) {
+func (k KafkaMessageChannel) Consume(channel int64) (*Message, error) {
 	if k.readers[channel] == nil {
 		k.readerConfig.Topic = strconv.FormatInt(channel, 10)
 		k.readers[channel] = kafka.NewReader(k.readerConfig)
@@ -49,7 +49,7 @@ func (k KafkaMessageChannel) Consume(channel int64) (*domain.Message, error) {
 		return nil, err
 	}
 
-	var message domain.Message
+	var message Message
 	if err := json.Unmarshal(kafkaMessage.Value, &message); err != nil {
 		return nil, err
 	}

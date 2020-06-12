@@ -53,7 +53,7 @@ func (m messageServerImpl) SendMessage(ctx context.Context, req *message.SendMes
 	}
 
 	// push到对应的message channel
-	if err := m.messageChan.PushMessage(newMsg.ReceiverID, &newMsg); err != nil {
+	if err := m.messageChan.PushMessage(newMsg.ReceiverID, newMsg.ChannelMessage()); err != nil {
 		log.Errorf("push message to message channel failed, err: %+v", err)
 		return nil, fmt.Errorf("push message to message channel failed, err: %+v", err)
 	}

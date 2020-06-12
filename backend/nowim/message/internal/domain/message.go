@@ -1,8 +1,10 @@
 package domain
 
 import (
-	"nowim.message/pkg/ulid"
+	"nowim.message/pkg/channel"
 	"time"
+
+	"nowim.message/pkg/ulid"
 )
 
 type Message struct {
@@ -22,5 +24,16 @@ func NewMessage(senderID, receiverID, clientTime int64, content string) *Message
 		Content:    content,
 		ClientTime: clientTime,
 		ServerTime: time.Now().UnixNano(),
+	}
+}
+
+func (m *Message) ChannelMessage() *channel.Message {
+	return &channel.Message{
+		MessageID:  m.MessageID,
+		SenderID:   m.SenderID,
+		ReceiverID: m.ReceiverID,
+		Content:    m.Content,
+		ClientTime: m.ClientTime,
+		ServerTime: m.ServerTime,
 	}
 }
